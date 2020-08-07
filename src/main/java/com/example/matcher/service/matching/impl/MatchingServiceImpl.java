@@ -3,11 +3,9 @@ package com.example.matcher.service.matching.impl;
 import com.example.matcher.controller.model.Employee;
 import com.example.matcher.controller.model.MatchingResult;
 import com.example.matcher.controller.model.SingleMatchingPair;
-import com.example.matcher.exception.UnprocessableCsvFileException;
-import com.example.matcher.exception.WrongFileExtensionException;
-import com.example.matcher.service.matching.criteria.MatchingCriteriaProvider;
-import com.example.matcher.service.matching.criteria.impl.MatchingCriteriaProviderImpl;
+import com.example.matcher.exception.InvalidCsvException;
 import com.example.matcher.service.matching.MatchingService;
+import com.example.matcher.service.matching.criteria.MatchingCriteriaProvider;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.jgrapht.alg.interfaces.MatchingAlgorithm;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
@@ -31,7 +28,7 @@ public class MatchingServiceImpl implements MatchingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchingServiceImpl.class);
     private static final String TIMER_TASK_NAME = "kolmogorov-execution-task";
-    private static final String FILE_EXTENSION = ".csv";
+    private static final String CSV_CONTENT_TYPE = "text/csv";
 
     //region Dependencies
     private final MatchingCriteriaProvider matchingCriteriaProvider;
@@ -46,37 +43,46 @@ public class MatchingServiceImpl implements MatchingService {
 
     //region Public methods
     @Override
-    public MatchingResult calculateBestMatchingCouplesFromCsv(final MultipartFile file) throws UnprocessableCsvFileException, WrongFileExtensionException {
-        final List<Employee> employees = extractEmployeesFromCSV(file);
-
-        final SimpleDirectedWeightedGraph<Employee, DefaultWeightedEdge> graph = buildGraph(employees);
-        final KolmogorovWeightedPerfectMatching<Employee, DefaultWeightedEdge> kolmogorovWeightedPerfectMatching = new KolmogorovWeightedPerfectMatching(graph, ObjectiveSense.MAXIMIZE);
-        StopWatch stopWatch = new StopWatch();
+    public MatchingResult calculateBestMatchingCouplesFromCsv(final MultipartFile file) throws InvalidCsvException {
+        final StopWatch stopWatch = new StopWatch();
         stopWatch.start(TIMER_TASK_NAME);
-        final MatchingAlgorithm.Matching<Employee, DefaultWeightedEdge> matching = kolmogorovWeightedPerfectMatching.getMatching();
+        final List<Employee> employees = extractEmployeesFromCSV(file);
+        final MatchingResult matchingResult = getMatchingResult(employees);
         stopWatch.stop();
         final long lastTaskTimeMillis = stopWatch.getLastTaskTimeMillis();
         LOGGER.info("Kolmogorov algorithm execution took - {} milliseconds", lastTaskTimeMillis);
-        final MatchingResult matchingResult = extractMatchingResult(graph, matching);
         matchingResult.setComputationTime(lastTaskTimeMillis);
         return matchingResult;
     }
     //endregion
 
     //region Private utility methods
-    private List<Employee> extractEmployeesFromCSV(final MultipartFile file) throws UnprocessableCsvFileException, WrongFileExtensionException {
-        try (Reader reader = new InputStreamReader(file.getInputStream());) {
-            if (!Objects.requireNonNull(file.getOriginalFilename()).endsWith(FILE_EXTENSION)) {
-                throw new WrongFileExtensionException(String.format("File extension is not %s", FILE_EXTENSION));
-            }
-            final CsvToBean<Employee> csvToBean = new CsvToBeanBuilder(reader)
+    private List<Employee> extractEmployeesFromCSV(final MultipartFile file) throws InvalidCsvException {
+        final String contentType = file.getContentType();
+        if (!CSV_CONTENT_TYPE.equals(contentType)) {
+            throw new InvalidCsvException(String.format("Invalid file extension: expected text/csv, found %s", contentType));
+        }
+        try (final Reader reader = new InputStreamReader(file.getInputStream())) {
+            final CsvToBean<Employee> csvToBean = new CsvToBeanBuilder<Employee>(reader)
                     .withType(Employee.class)
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
-            return csvToBean.parse();
-        } catch (IOException e) {
-            throw new UnprocessableCsvFileException("Unable to extract employees from provided file");
+            final List<Employee> employees = csvToBean.parse();
+            if (employees == null || employees.isEmpty()) {
+                throw new RuntimeException();
+            } else {
+                return employees;
+            }
+        } catch (final Exception e) {
+            throw new InvalidCsvException("Unable to extract employees from provided CSV");
         }
+    }
+
+    private MatchingResult getMatchingResult(final List<Employee> employees) {
+        final SimpleDirectedWeightedGraph<Employee, DefaultWeightedEdge> graph = buildGraph(employees);
+        final KolmogorovWeightedPerfectMatching<Employee, DefaultWeightedEdge> kolmogorovWeightedPerfectMatching = new KolmogorovWeightedPerfectMatching<>(graph, ObjectiveSense.MAXIMIZE);
+        final MatchingAlgorithm.Matching<Employee, DefaultWeightedEdge> matching = kolmogorovWeightedPerfectMatching.getMatching();
+        return extractMatchingResult(graph, matching);
     }
 
     private SimpleDirectedWeightedGraph<Employee, DefaultWeightedEdge> buildGraph(final List<Employee> employees) {

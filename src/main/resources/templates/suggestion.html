@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Spring Boot & Thymeleaf File Upload</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
@@ -19,18 +18,18 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th> N </th>
-                <th> Left Node Name </th>
+                <th> Index </th>
                 <th> Right Node Name </th>
+                <th> Left Node Name </th>
                 <th> Matching Percentage </th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="item, iter : ${list}">
                 <td><span th:text="${iter.count}"> iterator </span></td>
-                <td><span th:text="${item.mentee.name}"> Mentor Name </span></td>
-                <td><span th:text="${item.leftNode.name}"> Mentee Name </span></td>
-                <td><span th:text="${item.matchingPercentage}"> Matching Percentage </span> %</td>
+                <td><span th:text="${item.rightNode.name}"></span></td>
+                <td><span th:text="${item.leftNode.name}"></span></td>
+                <td><span th:text="${item.matchingPercentage}"></span> %</td>
             </tr>
             </tbody>
         </table>

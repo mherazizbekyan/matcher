@@ -4,14 +4,14 @@ public class SingleMatchingPair implements  Comparable<SingleMatchingPair> {
 
     //region Properties
     private Employee leftNode;
-    private Employee mentee;
+    private Employee rightNode;
     private double matchingPercentage;
     //endregion
 
     //region Constructors
-    public SingleMatchingPair(final Employee leftNode, final Employee mentee, final double matchingPercentage) {
+    public SingleMatchingPair(final Employee leftNode, final Employee rightNode, final double matchingPercentage) {
         this.leftNode = leftNode;
-        this.mentee = mentee;
+        this.rightNode = rightNode;
         this.matchingPercentage = matchingPercentage;
     }
 
@@ -26,12 +26,12 @@ public class SingleMatchingPair implements  Comparable<SingleMatchingPair> {
         this.leftNode = leftNode;
     }
 
-    public Employee getMentee() {
-        return mentee;
+    public Employee getRightNode() {
+        return rightNode;
     }
 
-    public void setMentee(final Employee mentee) {
-        this.mentee = mentee;
+    public void setRightNode(final Employee rightNode) {
+        this.rightNode = rightNode;
     }
 
     public double getMatchingPercentage() {
