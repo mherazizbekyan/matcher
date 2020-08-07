@@ -7,6 +7,8 @@ public class MatchingResult {
     private List<SingleMatchingPair> pairs;
 
     private double averagePercentage;
+
+    private long computationTime;
     //endregion
 
     //region Constructors
@@ -32,5 +34,14 @@ public class MatchingResult {
     public void setAveragePercentage(final double averagePercentage) {
         this.averagePercentage = averagePercentage;
     }
+
+    public long getComputationTime() {
+        return computationTime;
+    }
+
+    public void setComputationTime(final long computationTime) {
+        this.computationTime = computationTime;
+    }
+
     //endregion
 }

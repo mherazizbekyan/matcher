@@ -10,14 +10,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
 @Controller
-public class FileController {
+public class MainController {
 
     //region Dependencies
     private final FileService fileService;
@@ -25,7 +24,7 @@ public class FileController {
     //endregion
 
     //region Constructor
-    public FileController(final FileService fileService, final MatchingService matchingService) {
+    public MainController(final FileService fileService, final MatchingService matchingService) {
         this.fileService = fileService;
         this.matchingService = matchingService;
     }
@@ -47,6 +46,7 @@ public class FileController {
             final MatchingResult matchingResult = matchingService.calculateBestMatchingCouples(employees);
             model.addAttribute("averageMatching", matchingResult.getAveragePercentage());
             model.addAttribute("list", matchingResult.getPairs());
+            model.addAttribute("compytationTime", matchingResult.getComputationTime());
         }
         return "suggestion";
     }

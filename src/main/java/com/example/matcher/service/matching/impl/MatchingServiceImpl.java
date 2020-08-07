@@ -32,10 +32,12 @@ public class MatchingServiceImpl implements MatchingService {
 
         stopWatch.start("kolmogorov-execution-time");
         final MatchingAlgorithm.Matching<Employee, DefaultWeightedEdge> matching = kolmogorovWeightedPerfectMatching.getMatching();
-
         stopWatch.stop();
-        LOGGER.info("Kolmogorov algorithm execution took - {} milliseconds",  stopWatch.getLastTaskTimeMillis());
-        return extractMatchingResult(graph, matching);
+        final long lastTaskTimeMillis = stopWatch.getLastTaskTimeMillis();
+        LOGGER.info("Kolmogorov algorithm execution took - {} milliseconds", lastTaskTimeMillis);
+        final MatchingResult matchingResult = extractMatchingResult(graph, matching);
+        matchingResult.setComputationTime(lastTaskTimeMillis);
+        return matchingResult;
     }
     //endregion
 
