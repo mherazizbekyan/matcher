@@ -21,14 +21,14 @@ import java.util.Objects;
 public class FileServiceImpl implements FileService {
 
     private static final String UPLOAD_DIR = "";
-    private static final String SAMPLE_CSV_FILE_PATH = "data.csv";
+    private static final String CSV_FILE_PATH = "data.csv";
 
     //region Public methods
     @Override
     public void upload(final MultipartFile file) {
         final String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         try {
-            final Path path = Paths.get(UPLOAD_DIR + fileName);
+            final Path path = Paths.get(UPLOAD_DIR + CSV_FILE_PATH);
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,7 +37,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<Employee> extractEmployeesFromCSV() {
-        try (Reader reader = Files.newBufferedReader(Paths.get(SAMPLE_CSV_FILE_PATH))) {
+        try (Reader reader = Files.newBufferedReader(Paths.get(CSV_FILE_PATH))) {
             final CsvToBean<Employee> csvToBean = new CsvToBeanBuilder(reader)
                     .withType(Employee.class)
                     .withIgnoreLeadingWhiteSpace(true)
