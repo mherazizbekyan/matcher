@@ -3,14 +3,14 @@ package com.example.matcher.controller.model;
 public class SingleMatchingPair implements  Comparable<SingleMatchingPair> {
 
     //region Properties
-    private Employee mentor;
+    private Employee leftNode;
     private Employee mentee;
     private double matchingPercentage;
     //endregion
 
     //region Constructors
-    public SingleMatchingPair(final Employee mentor, final Employee mentee, final double matchingPercentage) {
-        this.mentor = mentor;
+    public SingleMatchingPair(final Employee leftNode, final Employee mentee, final double matchingPercentage) {
+        this.leftNode = leftNode;
         this.mentee = mentee;
         this.matchingPercentage = matchingPercentage;
     }
@@ -18,12 +18,12 @@ public class SingleMatchingPair implements  Comparable<SingleMatchingPair> {
     //endregion
 
     //region Getters, Setters
-    public Employee getMentor() {
-        return mentor;
+    public Employee getLeftNode() {
+        return leftNode;
     }
 
-    public void setMentor(final Employee mentor) {
-        this.mentor = mentor;
+    public void setLeftNode(final Employee leftNode) {
+        this.leftNode = leftNode;
     }
 
     public Employee getMentee() {
