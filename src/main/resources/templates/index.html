@@ -10,13 +10,19 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 mx-auto">
-                <h2>Upload File Example</h2>
+                <h2>Upload File</h2>
                 <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
                 <form method="post" th:action="@{/upload}" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <input type="file" name="file" class="form-control-file">
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input type="file" name="file" class="custom-file-input" id="inputGroupFile04">
+                            <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">Upload</button>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Upload File</button>
+
                 </form>
             </div>
         </div>
