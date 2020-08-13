@@ -23,7 +23,7 @@ public class Employee {
     @CsvBindByName
     private String location;
 
-    @CsvBindByName(column = "sameLocationPreference" )
+    @CsvBindByName(column = "sameLocationPreference")
     private String sameLocationPreference;
     //endregion
 
@@ -31,19 +31,22 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(final String name, final String email,
+    public Employee(final String name,
+                    final String email,
                     final String division,
                     final short age,
                     final short timezone,
-                    final String location) {
+                    final String location,
+                    final String sameLocationPreference) {
         this.name = name;
         this.email = email;
         this.division = division;
         this.age = age;
         this.timezone = timezone;
         this.location = location;
-
+        this.sameLocationPreference = sameLocationPreference;
     }
+
     //endregion
 
     //region Getters, Setters
