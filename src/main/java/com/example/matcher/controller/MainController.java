@@ -44,6 +44,5 @@ public class MainController {
         }
         return "suggestion";
     }
-
     //endregion
 }

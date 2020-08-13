@@ -94,7 +94,7 @@ public class MatchingServiceImpl implements MatchingService {
 
     private void addEdgesToGraph(final List<Employee> employees, final SimpleDirectedWeightedGraph<Employee, DefaultWeightedEdge> graph) {
         employees.forEach(source -> employees.forEach(target -> {
-            if (!source.equals(target)) {
+            if (!source.equals(target) && matchingCriteriaProvider.areLocationPreferencesCompatible(source, target)) {
                 final double weight = matchingCriteriaProvider.calculateMatchingWeight(source, target);
                 final DefaultWeightedEdge edge = graph.addEdge(source, target);
                 graph.setEdgeWeight(edge, weight);

@@ -19,18 +19,30 @@ public class Employee {
 
     @CsvBindByName
     private short timezone;
+
+    @CsvBindByName
+    private String location;
+
+    @CsvBindByName(column = "sameLocationPreference" )
+    private String sameLocationPreference;
     //endregion
 
     //region Constructors
     public Employee() {
     }
 
-    public Employee(final String name, final String email, final String division, final short age, final short timezone) {
+    public Employee(final String name, final String email,
+                    final String division,
+                    final short age,
+                    final short timezone,
+                    final String location) {
         this.name = name;
         this.email = email;
         this.division = division;
         this.age = age;
         this.timezone = timezone;
+        this.location = location;
+
     }
     //endregion
 
@@ -74,6 +86,23 @@ public class Employee {
     public void setTimezone(final short timezone) {
         this.timezone = timezone;
     }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getSameLocationPreference() {
+        return sameLocationPreference;
+    }
+
+    public void setSameLocationPreference(String sameLocationPreference) {
+        this.sameLocationPreference = sameLocationPreference;
+    }
+
     //endregion
 
 }

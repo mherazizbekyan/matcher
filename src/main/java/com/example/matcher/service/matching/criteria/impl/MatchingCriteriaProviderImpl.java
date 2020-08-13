@@ -4,6 +4,9 @@ import com.example.matcher.controller.model.Employee;
 import com.example.matcher.service.matching.criteria.MatchingCriteriaProvider;
 import org.springframework.stereotype.Component;
 
+import static com.example.matcher.controller.model.SameLocationPreference.NO;
+import static com.example.matcher.controller.model.SameLocationPreference.YES;
+
 @Component
 public class MatchingCriteriaProviderImpl implements MatchingCriteriaProvider {
 
@@ -21,6 +24,14 @@ public class MatchingCriteriaProviderImpl implements MatchingCriteriaProvider {
             weight += 40;
         }
         return weight;
+    }
+
+    public boolean areLocationPreferencesCompatible(final Employee leftNode, final Employee rightNode) {
+        boolean areInSameLocation = leftNode.getLocation().equals(rightNode.getLocation());
+        boolean isSameLocationRequired = leftNode.getSameLocationPreference().equals(YES.name()) || rightNode.getSameLocationPreference().equals(YES.name());
+        boolean isDifferentLocationRequired = leftNode.getSameLocationPreference().equals(NO.name()) || rightNode.getSameLocationPreference().equals(NO.name());
+
+        return !((areInSameLocation && isDifferentLocationRequired) || (!areInSameLocation && isSameLocationRequired));
     }
     //endregion
 
